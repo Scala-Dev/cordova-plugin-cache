@@ -34,16 +34,37 @@
 	// Arguments arenot used at the moment.
     // NSArray* arguments = command.arguments;
 
-    [self.commandDelegate runInBackground:^{
+    //[self.commandDelegate runInBackground:^{
 
         // clear cache
         [[NSURLCache sharedURLCache] removeAllCachedResponses];
-        [NSURLCache sharedURLCache].diskCapacity = 0;
-        [NSURLCache sharedURLCache].memoryCapacity = 0;
+        [[NSURLCache sharedURLCache] setDiskCapacity:0];
+        [[NSURLCache sharedURLCache] setMemoryCapacity:0];
 
-    }];
+    //}];
 
-    [self success];
+        // NSSet *websiteDataTypes = [NSSet setWithArray:@[
+        //                 WKWebsiteDataTypeDiskCache,
+        //                 WKWebsiteDataTypeOfflineWebApplicationCache,
+        //                 WKWebsiteDataTypeMemoryCache,
+        //                 WKWebsiteDataTypeLocalStorage,
+        //                 WKWebsiteDataTypeCookies,
+        //                 WKWebsiteDataTypeSessionStorage,
+        //                 WKWebsiteDataTypeIndexedDBDatabases,
+        //                 WKWebsiteDataTypeWebSQLDatabases
+        //                 ]];
+        //// All kinds of data
+        NSSet *websiteDataTypes = [WKWebsiteDataStore allWebsiteDataTypes];
+        //// Date from
+        NSDate *dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
+        //// Execute
+        [[WKWebsiteDataStore defaultDataStore] removeDataOfTypes:websiteDataTypes modifiedSince:dateFrom completionHandler:^{
+            // Done
+            NSLog(@"remove done");
+            [self success];
+        }];
+
+    //[self success];
 }
 
 - (void)success
