@@ -35,6 +35,8 @@
                 <param name="ios-package" value="Cache" />
             </feature>
         </config-file>
+        
+        <framework src="WebKit.framework" weak="true" />
 
         <header-file src="src/ios/Cache.h" />
         <source-file src="src/ios/Cache.m" />
