@@ -30,6 +30,7 @@ import org.json.JSONException;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.util.Log;
+import android.webkit.WebStorage;
 
 @TargetApi(19)
 public class Cache extends CordovaPlugin
