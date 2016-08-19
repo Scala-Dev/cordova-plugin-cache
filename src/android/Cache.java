@@ -47,51 +47,75 @@ public class Cache extends CordovaPlugin
     @Override
     public boolean execute (String action, JSONArray args, CallbackContext callbackContext) throws JSONException
     {
-		/*try
-		{
-		*/
-			if( action.equals("clear") )
+
+	if( action.equals("clear") )
+	{
+		Log.v(LOG_TAG,"Cordova Android Cache.clear() called.");
+        	this.callbackContext = callbackContext;
+		
+		final Cache self = this;
+        	cordova.getActivity().runOnUiThread( new Runnable() {
+            		public void run()
 			{
-				Log.v(LOG_TAG,"Cordova Android Cache.clear() called.");
-		        this.callbackContext = callbackContext;
-				
-				final Cache self = this;
-		        cordova.getActivity().runOnUiThread( new Runnable() {
-		            public void run()
-					{
-						try
-						{
-							// clear the cache
-							self.webView.clearCache(true);
-							
-							// send success result to cordova
-							PluginResult result = new PluginResult(PluginResult.Status.OK);
-							result.setKeepCallback(false); 
-							self.callbackContext.sendPluginResult(result);
-						}
-						catch( Exception e )
-						{
-							String msg = "Error while clearing webview cache.";
-							Log.e(LOG_TAG, msg );
-							
-							// return error answer to cordova
-							PluginResult result = new PluginResult(PluginResult.Status.ERROR, msg);
-							result.setKeepCallback(false); 
-							self.callbackContext.sendPluginResult(result);
-						}
-		            }
-		        });
-				return true;
-			}
-			return false;
-			/*
-		}
-		catch (JSONException e)
-		{
-			// TODO: signal JSON problem to JS
-			//callbackContext.error("Problem with JSON");
-			return false;
-		}
-		*/
+				try
+				{
+					// clear the cache
+					self.webView.clearCache(true);
+					
+					// send success result to cordova
+					PluginResult result = new PluginResult(PluginResult.Status.OK);
+					result.setKeepCallback(false); 
+					self.callbackContext.sendPluginResult(result);
+				}
+				catch( Exception e )
+				{
+					String msg = "Error while clearing webview cache.";
+					Log.e(LOG_TAG, msg );
+					
+					// return error answer to cordova
+					PluginResult result = new PluginResult(PluginResult.Status.ERROR, msg);
+					result.setKeepCallback(false); 
+					self.callbackContext.sendPluginResult(result);
+				}
+            		}
+        	});
+		return true;
+	}
+	if( action.equals("clearAllData") )
+	{
+		Log.v(LOG_TAG,"Cordova Android Cache.clear() called.");
+        	this.callbackContext = callbackContext;
+		
+		final Cache self = this;
+        	cordova.getActivity().runOnUiThread( new Runnable() {
+            		public void run()
+			{
+				try
+				{
+					// clear the all data
+					WebStorage webStorage = WebStorage.getInstance(); 
+					webStorage.deleteAllData(); 
+					
+					// send success result to cordova
+					PluginResult result = new PluginResult(PluginResult.Status.OK);
+					result.setKeepCallback(false); 
+					self.callbackContext.sendPluginResult(result);
+				}
+				catch( Exception e )
+				{
+					String msg = "Error while clearing all data.";
+					Log.e(LOG_TAG, msg );
+					
+					// return error answer to cordova
+					PluginResult result = new PluginResult(PluginResult.Status.ERROR, msg);
+					result.setKeepCallback(false); 
+					self.callbackContext.sendPluginResult(result);
+				}
+            		}
+        	});
+		return true;
+	}
+	return false;
+
     }
 }
