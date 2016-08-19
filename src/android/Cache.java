@@ -92,6 +92,9 @@ public class Cache extends CordovaPlugin
 			{
 				try
 				{
+					// clear the cache
+					self.webView.clearCache(true);
+					
 					// clear the all data
 					WebStorage webStorage = WebStorage.getInstance(); 
 					webStorage.deleteAllData(); 
