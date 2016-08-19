@@ -10,6 +10,10 @@ var Cache =
     clear : function( success, error )
     {
         exec(success, error, "Cache", "clear", [])
+    },
+    clearAllData : function( success, error )
+    {
+        exec(success, error, "Cache", "clearAllData", [])
     }
 }
 
