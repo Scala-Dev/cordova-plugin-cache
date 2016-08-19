@@ -37,9 +37,9 @@
     [self.commandDelegate runInBackground:^{
 
         // clear cache
-        NSURLCache.sharedURLCache().removeAllCachedResponses()
-        NSURLCache.sharedURLCache().diskCapacity = 0
-        NSURLCache.sharedURLCache().memoryCapacity = 0
+        [[NSURLCache sharedURLCache] removeAllCachedResponses];
+        [NSURLCache sharedURLCache].diskCapacity = 0;
+        [NSURLCache sharedURLCache].memoryCapacity = 0;
 
     }];
 
