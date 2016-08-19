@@ -27,11 +27,29 @@
 
 - (void)clear:(CDVInvokedUrlCommand*)command
 {
-	NSLog(@"Cordova iOS Cache.clear() called.");
+    NSLog(@"Cordova iOS Cache.clear() called.");
 
     self.command = command;
 
-	// Arguments arenot used at the moment.
+    // Arguments arenot used at the moment.
+    // NSArray* arguments = command.arguments;
+
+
+    // clear cache
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [[NSURLCache sharedURLCache] setDiskCapacity:0];
+    [[NSURLCache sharedURLCache] setMemoryCapacity:0];
+
+    [self success];
+}
+
+- (void)clearAllData:(CDVInvokedUrlCommand*)command
+{
+    NSLog(@"Cordova iOS Cache.clear() called.");
+
+    self.command = command;
+
+    // Arguments arenot used at the moment.
     // NSArray* arguments = command.arguments;
 
     //[self.commandDelegate runInBackground:^{
