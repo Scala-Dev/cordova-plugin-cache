@@ -32,6 +32,7 @@
 }
 
 -(void) clear: (CDVInvokedUrlCommand*)command;
+-(void) clearAllData: (CDVInvokedUrlCommand*)command;
 
 // retain command for async repsonses
 @property (nonatomic, strong) CDVInvokedUrlCommand* command;
