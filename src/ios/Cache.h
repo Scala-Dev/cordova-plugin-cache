@@ -22,6 +22,8 @@
 
 #import <Cordova/CDVPlugin.h>
 
+#import <WebKit/WebKit.h>
+
 #import "AppDelegate.h"
 
 
