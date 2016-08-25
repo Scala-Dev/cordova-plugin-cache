@@ -30,10 +30,15 @@ import org.json.JSONException;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.util.Log;
-import android.webkit.WebStorage;
+import android.view.View;
 
 import java.io.File;
 import java.io.IOException;
+
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.Context;
+import android.app.AlarmManager;
 
 @TargetApi(19)
 public class Cache extends CordovaPlugin {
@@ -51,13 +56,15 @@ public class Cache extends CordovaPlugin {
 	@Override
 	public boolean execute (String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 
+		final Activity activity = cordova.getActivity();
+
 		if( action.equals("clear") ) {
 			Log.v(LOG_TAG, "Cordova Android Cache.clear() called.");
 			this.callbackContext = callbackContext;
 			
 			final Cache self = this;
 
-			cordova.getActivity().runOnUiThread( new Runnable() {
+			activity.runOnUiThread( new Runnable() {
 				public void run() {
 					try {
 						// clear the cache
@@ -86,13 +93,12 @@ public class Cache extends CordovaPlugin {
 			Log.v(LOG_TAG, "Cordova Android Cache.clear() called.");
 			this.callbackContext = callbackContext;
 
-	        final Activity activity = cordova.getActivity();
 			final String appDataDir = activity.getFilesDir().getParent();
 			final File defaultUserDataDir = new File(appDataDir + File.separator + "app_xwalkcore" + File.separator + "Default");
 			
 			final Cache self = this;
 
-			cordova.getActivity().runOnUiThread(new Runnable() {
+			activity.runOnUiThread(new Runnable() {
 
 				public void run() {
 					try {
@@ -102,7 +108,14 @@ public class Cache extends CordovaPlugin {
 						// clear the all data
 						if (defaultUserDataDir.exists()) {
 							delete(defaultUserDataDir);
-							self.webView.loadUrlIntoView(self.webView.getUrl(), true);
+							
+							// schedule a restart of the app
+							Context context = activity.getApplicationContext();
+							Intent intent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+							PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+							AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+							alarmManager.set(AlarmManager.RTC, System.currentTimeMillis(), pendingIntent);
+							System.exit(0);
 						}
 
 						
