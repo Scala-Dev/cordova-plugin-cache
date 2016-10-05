@@ -25,6 +25,12 @@
 
 @synthesize command;
 
+- (void)pluginInitialize
+{
+        NSLog(@"INIT PLUGIN.");
+}
+
+
 - (void)clear:(CDVInvokedUrlCommand*)command
 {
     NSLog(@"Cordova iOS Cache.clear() called.");
