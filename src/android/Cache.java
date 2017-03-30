@@ -20,31 +20,31 @@
 
 package com.scala.cordova.plugin.cache;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
-
 import org.json.JSONArray;
 import org.json.JSONException;
-
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.util.Log;
-import android.view.View;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.Context;
-import android.app.AlarmManager;
 
 @TargetApi(19)
 public class Cache extends CordovaPlugin {
 
 	private static final String LOG_TAG = "Cache";
 	private CallbackContext callbackContext;
+	public static final String EXP_PREF = "expPref";
 
 	/**
 	 * Constructor.
@@ -54,7 +54,7 @@ public class Cache extends CordovaPlugin {
 	}
 
 	@Override
-	public boolean execute (String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+	public boolean execute (String action, final JSONArray args, CallbackContext callbackContext) throws JSONException {
 
 		final Activity activity = cordova.getActivity();
 
@@ -68,7 +68,7 @@ public class Cache extends CordovaPlugin {
 				public void run() {
 					try {
 						// clear the cache
-						self.webView.clearCache(true);
+						self.webView.clearCache();
 						
 						// send success result to cordova
 						PluginResult result = new PluginResult(PluginResult.Status.OK);
@@ -103,8 +103,8 @@ public class Cache extends CordovaPlugin {
 				public void run() {
 					try {
 						// clear the cache
-						self.webView.clearCache(true);
-						
+						self.webView.clearCache();
+
 						// clear the all data
 						if (defaultUserDataDir.exists()) {
 							delete(defaultUserDataDir);
@@ -137,6 +137,74 @@ public class Cache extends CordovaPlugin {
 			});
 			return true;
 		}
+
+		if(action.equals("savePreference")){
+			Log.v(LOG_TAG, "Cordova Android Cache.savePreference() called.");
+			this.callbackContext = callbackContext;
+			final Cache self = this;
+			activity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SharedPreferences preferences = activity.getSharedPreferences(EXP_PREF, Context.MODE_PRIVATE);
+						SharedPreferences.Editor edit = preferences.edit();
+						JSONObject jsonObject = args.getJSONObject(0);
+						JSONArray names = jsonObject.names();
+						Object key = names.get(0);
+						Object value = jsonObject.get(key.toString());
+						edit.putString(key.toString(),value.toString());
+						edit.commit();
+
+						// send success result to cordova
+						PluginResult result = new PluginResult(PluginResult.Status.OK);
+						result.setKeepCallback(false);
+						self.callbackContext.sendPluginResult(result);
+
+					}catch (Exception e){
+						String msg = "Error while saving preference.";
+						Log.e(LOG_TAG, msg);
+
+						// return error answer to cordova
+						PluginResult result = new PluginResult(PluginResult.Status.ERROR, msg);
+						result.setKeepCallback(false);
+						self.callbackContext.sendPluginResult(result);
+					}
+				}
+			});
+
+			return true;
+
+		}
+
+		if(action.equals("getPreference")){
+			Log.v(LOG_TAG, "Cordova Android Cache.getPreference() called.");
+			this.callbackContext = callbackContext;
+			final Cache self = this;
+			activity.runOnUiThread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						SharedPreferences preferences = activity.getSharedPreferences(EXP_PREF, Context.MODE_PRIVATE);
+						String key = (String) args.get(0);
+						String value = preferences.getString(key, "");
+						// send success result to cordova
+						PluginResult result = new PluginResult(PluginResult.Status.OK,value);
+						result.setKeepCallback(false);
+						self.callbackContext.sendPluginResult(result);
+					}catch (Exception e){
+						String msg = "Error get preference.";
+						Log.e(LOG_TAG, msg);
+
+						// return error answer to cordova
+						PluginResult result = new PluginResult(PluginResult.Status.ERROR, msg);
+						result.setKeepCallback(false);
+					}
+
+				}
+			});
+			return true;
+		}
+
 
 		return false;
 
