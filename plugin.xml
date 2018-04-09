@@ -5,7 +5,7 @@
     version="1.1.1">
 
     <name>Cache</name>
-    <repo>https://github.com/ScalaInc/cordova-plugin-cache.git</repo>
+    <repo>https://github.com/Scala-Dev/cordova-plugin-cache.git</repo>
     <keywords>webview,cache,clear,android,ios</keywords>
     <license>MIT</license>
     <author>Scala Inc</author>
